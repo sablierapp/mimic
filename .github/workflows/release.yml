@@ -5,10 +5,9 @@ on:
       - v*
 
 permissions:
-  contents: write
-  packages: write
-  # issues: write
-  # id-token: write
+    id-token: write # For cosign
+    packages: write # For GHCR
+    contents: read # Not required for public repositories, but for clarity
 
 jobs:
   release:
