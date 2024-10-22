@@ -1,0 +1,155 @@
+version: 2
+project_name: mimic
+
+builds:
+  - binary: mimic
+    goos:
+      - windows
+      - darwin
+      - linux
+    goarch:
+      - amd64
+      - arm
+      - arm64
+    goarm:
+      - '7'
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^doc:'
+      - '^chore:'
+      - '^chore(deps):'
+      - '^test:'
+      - '^tests:'
+
+archives:
+  - id: mimic
+    name_template: '{{ .ProjectName }}_v{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm}}v{{ .Arm }}{{ end }}'
+    format: tar.gz
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - LICENSE
+
+docker_manifests:
+  - name_template: 'sablierapp/mimic:{{ .Tag }}'
+    image_templates:
+      - 'sablierapp/mimic:{{ .Tag }}-amd64'
+      - 'sablierapp/mimic:{{ .Tag }}-arm64'
+      - 'sablierapp/mimic:{{ .Tag }}-armv7'
+  - name_template: 'sablierapp/mimic:latest'
+    image_templates:
+      - 'sablierapp/mimic:{{ .Tag }}-amd64'
+      - 'sablierapp/mimic:{{ .Tag }}-arm64'
+      - 'sablierapp/mimic:{{ .Tag }}-armv7'
+  - name_template: 'sablierapp/mimic:v{{ .Major }}.{{ .Minor }}'
+    image_templates:
+      - 'sablierapp/mimic:v{{ .Major }}.{{ .Minor }}-amd64'
+      - 'sablierapp/mimic:v{{ .Major }}.{{ .Minor }}-arm64'
+      - 'sablierapp/mimic:v{{ .Major }}.{{ .Minor }}-armv7'
+
+  - name_template: 'ghcr.io/sablierapp/mimic:{{ .Tag }}'
+    image_templates:
+      - 'ghcr.io/sablierapp/mimic:{{ .Tag }}-amd64'
+      - 'ghcr.io/sablierapp/mimic:{{ .Tag }}-arm64'
+      - 'ghcr.io/sablierapp/mimic:{{ .Tag }}-armv7'
+  - name_template: 'ghcr.io/sablierapp/mimic:latest'
+    image_templates:
+      - 'ghcr.io/sablierapp/mimic:{{ .Tag }}-amd64'
+      - 'ghcr.io/sablierapp/mimic:{{ .Tag }}-arm64'
+      - 'ghcr.io/sablierapp/mimic:{{ .Tag }}-armv7'
+  - name_template: 'ghcr.io/sablierapp/mimic:v{{ .Major }}.{{ .Minor }}'
+    image_templates:
+      - 'ghcr.io/sablierapp/mimic:v{{ .Major }}.{{ .Minor }}-amd64'
+      - 'ghcr.io/sablierapp/mimic:v{{ .Major }}.{{ .Minor }}-arm64'
+      - 'ghcr.io/sablierapp/mimic:v{{ .Major }}.{{ .Minor }}-armv7'
+
+dockers:
+  - use: buildx
+    goos: linux
+    goarch: amd64
+    dockerfile: buildx.Dockerfile
+    image_templates:
+      - 'sablierapp/mimic:latest-amd64'
+      - 'sablierapp/mimic:{{ .Tag }}-amd64'
+      - 'sablierapp/mimic:v{{ .Major }}.{{ .Minor }}-amd64'
+      - 'ghcr.io/sablierapp/mimic:latest-amd64'
+      - 'ghcr.io/sablierapp/mimic:{{ .Tag }}-amd64'
+      - 'ghcr.io/sablierapp/mimic:v{{ .Major }}.{{ .Minor }}-amd64'
+    build_flag_templates:
+      - '--pull'
+      # https://github.com/opencontainers/image-spec/blob/main/annotations.md#pre-defined-annotation-keys
+      - '--label=org.opencontainers.image.title={{.ProjectName}}'
+      - '--label=org.opencontainers.image.description=Mimic is a configurable web-server with a configurable behavior.'
+      - '--label=org.opencontainers.image.source={{.GitURL}}'
+      - '--label=org.opencontainers.image.url={{.GitURL}}'
+      - '--label=org.opencontainers.image.documentation={{.GitURL}}'
+      - '--label=org.opencontainers.image.created={{.Date}}'
+      - '--label=org.opencontainers.image.revision={{.FullCommit}}'
+      - '--label=org.opencontainers.image.version={{.Version}}'
+      - '--platform=linux/amd64'
+
+  - use: buildx
+    goos: linux
+    goarch: arm64
+    dockerfile: buildx.Dockerfile
+    image_templates:
+      - 'sablierapp/mimic:latest-arm64'
+      - 'sablierapp/mimic:{{ .Tag }}-arm64'
+      - 'sablierapp/mimic:v{{ .Major }}.{{ .Minor }}-arm64'
+      - 'ghcr.io/sablierapp/mimic:latest-arm64'
+      - 'ghcr.io/sablierapp/mimic:{{ .Tag }}-arm64'
+      - 'ghcr.io/sablierapp/mimic:v{{ .Major }}.{{ .Minor }}-arm64'
+    build_flag_templates:
+      - '--pull'
+      # https://github.com/opencontainers/image-spec/blob/main/annotations.md#pre-defined-annotation-keys
+      - '--label=org.opencontainers.image.title={{.ProjectName}}'
+      - '--label=org.opencontainers.image.description=Mimic is a configurable web-server with a configurable behavior.'
+      - '--label=org.opencontainers.image.source={{.GitURL}}'
+      - '--label=org.opencontainers.image.url={{.GitURL}}'
+      - '--label=org.opencontainers.image.documentation={{.GitURL}}'
+      - '--label=org.opencontainers.image.created={{.Date}}'
+      - '--label=org.opencontainers.image.revision={{.FullCommit}}'
+      - '--label=org.opencontainers.image.version={{.Version}}'
+      - '--platform=linux/arm64'
+
+  - use: buildx
+    goos: linux
+    goarch: arm
+    goarm: '7'
+    dockerfile: buildx.Dockerfile
+    image_templates:
+      - 'sablierapp/mimic:latest-armv7'
+      - 'sablierapp/mimic:{{ .Tag }}-armv7'
+      - 'sablierapp/mimic:v{{ .Major }}.{{ .Minor }}-armv7'
+      - 'ghcr.io/sablierapp/mimic:latest-armv7'
+      - 'ghcr.io/sablierapp/mimic:{{ .Tag }}-armv7'
+      - 'ghcr.io/sablierapp/mimic:v{{ .Major }}.{{ .Minor }}-armv7'
+    build_flag_templates:
+      - '--pull'
+      # https://github.com/opencontainers/image-spec/blob/main/annotations.md#pre-defined-annotation-keys
+      - '--label=org.opencontainers.image.title={{.ProjectName}}'
+      - '--label=org.opencontainers.image.description=Mimic is a configurable web-server with a configurable behavior.'
+      - '--label=org.opencontainers.image.source={{.GitURL}}'
+      - '--label=org.opencontainers.image.url={{.GitURL}}'
+      - '--label=org.opencontainers.image.documentation={{.GitURL}}'
+      - '--label=org.opencontainers.image.created={{.Date}}'
+      - '--label=org.opencontainers.image.revision={{.FullCommit}}'
+      - '--label=org.opencontainers.image.version={{.Version}}'
+      - '--platform=linux/arm/v7'
+
+docker_signs:
+  - cmd: cosign
+    env:
+      - COSIGN_EXPERIMENTAL=1
+    args:
+      - "sign"
+      - "--oidc-issuer=https://token.actions.githubusercontent.com"
+      - "${artifact}@${digest}"
+      - "--yes"
+    artifacts: all
+    output: true

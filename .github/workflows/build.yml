@@ -1,0 +1,42 @@
+name: Main
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+
+  main:
+    name: Main Process
+    runs-on: ubuntu-latest
+    env:
+      GO_VERSION: stable
+      CGO_ENABLED: 0
+
+    steps:
+
+      # https://github.com/marketplace/actions/checkout
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # https://github.com/marketplace/actions/setup-go-environment
+      - name: Set up Go ${{ env.GO_VERSION }}
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Check and get dependencies
+        run: |
+          go mod tidy
+          git diff --exit-code go.mod
+          git diff --exit-code go.sum
+
+      - name: Make
+        run: make build
+
+      - name: Make Image
+        run: make image
