@@ -3,7 +3,7 @@
 IMAGE_NAME := sablierapp/mimic
 
 build:
-	goreleaser build --single-target --clean --snapshot
+	CGO_ENABLED=0 go build -a --trimpath --installsuffix cgo --ldflags="-s" -o mimic
 
 check:
 	golangci-lint run
