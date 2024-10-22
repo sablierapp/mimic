@@ -92,6 +92,7 @@ dockers:
       - '--label=org.opencontainers.image.revision={{.FullCommit}}'
       - '--label=org.opencontainers.image.version={{.Version}}'
       - '--platform=linux/amd64'
+    skip_push: true
 
   - use: buildx
     goos: linux
@@ -116,6 +117,7 @@ dockers:
       - '--label=org.opencontainers.image.revision={{.FullCommit}}'
       - '--label=org.opencontainers.image.version={{.Version}}'
       - '--platform=linux/arm64'
+    skip_push: true
 
   - use: buildx
     goos: linux
@@ -141,6 +143,7 @@ dockers:
       - '--label=org.opencontainers.image.revision={{.FullCommit}}'
       - '--label=org.opencontainers.image.version={{.Version}}'
       - '--platform=linux/arm/v7'
+    skip_push: true
 
 docker_signs:
   - cmd: cosign
