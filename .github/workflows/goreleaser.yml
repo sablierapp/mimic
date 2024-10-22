@@ -1,13 +1,13 @@
-name: "Release binaries and images"
+name: "goreleaser"
 on:
   push:
     tags:
       - v*
 
 permissions:
-    id-token: write # For cosign
-    packages: write # For GHCR
-    contents: write # Releases
+  id-token: write # For cosign
+  packages: write # For GHCR
+  contents: write # Releases
 
 jobs:
   release:
