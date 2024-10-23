@@ -91,6 +91,7 @@ dockers:
       - '--label=org.opencontainers.image.created={{.Date}}'
       - '--label=org.opencontainers.image.revision={{.FullCommit}}'
       - '--label=org.opencontainers.image.version={{.Version}}'
+      - '--label=io.artifacthub.package.readme-url=https://raw.githubusercontent.com/sablierapp/mimic/{{.FullCommit}}/README.md'
       - '--platform=linux/amd64'
 
   - use: buildx
@@ -115,6 +116,7 @@ dockers:
       - '--label=org.opencontainers.image.created={{.Date}}'
       - '--label=org.opencontainers.image.revision={{.FullCommit}}'
       - '--label=org.opencontainers.image.version={{.Version}}'
+      - '--label=io.artifacthub.package.readme-url=https://raw.githubusercontent.com/sablierapp/mimic/{{.FullCommit}}/README.md'
       - '--platform=linux/arm64'
 
   - use: buildx
@@ -140,6 +142,7 @@ dockers:
       - '--label=org.opencontainers.image.created={{.Date}}'
       - '--label=org.opencontainers.image.revision={{.FullCommit}}'
       - '--label=org.opencontainers.image.version={{.Version}}'
+      - '--label=io.artifacthub.package.readme-url=https://raw.githubusercontent.com/sablierapp/mimic/{{.FullCommit}}/README.md'
       - '--platform=linux/arm/v7'
 
 docker_signs:
