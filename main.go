@@ -28,7 +28,15 @@ func init() {
 }
 
 func main() {
-	os.Exit(run())
+	if len(os.Args) < 2 {
+		os.Exit(run())
+	}
+	switch os.Args[1] {
+	case "healthcheck":
+		os.Exit(healthcheck())
+	default:
+		os.Exit(run())
+	}
 }
 
 func run() int {
@@ -55,6 +63,12 @@ func server() {
 
 	log.Printf("Starting up on port %s (started in %.0f seconds)", *port, time.Since(startingTime).Seconds())
 
+	if *healthy {
+		log.Printf("Application is started... Should be healthy in %.0f seconds.", healthyAfter.Seconds())
+	} else {
+		log.Print("Application is started... Will be unhealthy because -healthy=false.")
+	}
+
 	log.Fatal(http.ListenAndServe(":"+*port, mux))
 }
 
@@ -80,34 +94,57 @@ func hello(rw http.ResponseWriter, _ *http.Request) {
 func health(rw http.ResponseWriter, _ *http.Request) {
 	// Starting
 	if *healthy && time.Since(startingTime) < *healthyAfter {
+		rw.WriteHeader(http.StatusServiceUnavailable)
 		_, err := rw.Write([]byte("starting"))
 		if err != nil {
 			http.Error(rw, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		rw.WriteHeader(http.StatusOK)
 		return
 	}
 
 	// healthy
 	if *healthy && time.Since(startingTime) > *healthyAfter {
+		rw.WriteHeader(http.StatusOK)
 		_, err := rw.Write([]byte("healthy"))
 		if err != nil {
 			http.Error(rw, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		rw.WriteHeader(http.StatusOK)
 		return
 	}
 
 	// Unhealthy
 	if !*healthy {
+		rw.WriteHeader(http.StatusServiceUnavailable)
 		_, err := rw.Write([]byte("unhealthy"))
 		if err != nil {
 			http.Error(rw, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		rw.WriteHeader(http.StatusServiceUnavailable)
 		return
 	}
+}
+
+func healthcheck() int {
+	request, err := http.NewRequest("GET", "http://localhost:"+*port+"/health", http.NoBody)
+	if err != nil {
+		log.Printf("Error creating request: %v", err)
+		return 1
+	}
+
+	response, err := http.DefaultClient.Do(request)
+	if err != nil {
+		log.Printf("Error making request: %v", err)
+		return 1
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode != http.StatusOK {
+		log.Printf("Bad healthcheck status: %s", response.Status)
+		return 1
+	}
+
+	log.Printf("Good healthcheck status: %s", response.Status)
+	return 0
 }
