@@ -8,7 +8,7 @@ RUN apk --no-cache --no-progress add git tzdata make \
 FROM scratch
 
 COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
-COPY mimic /
+COPY mimic .
 
 ENTRYPOINT ["/mimic"]
 EXPOSE 80
