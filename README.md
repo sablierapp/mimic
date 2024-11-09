@@ -2,6 +2,17 @@
 
 Mimic is a configurable web-server with a configurable behavior.
 
+<!-- TOC -->
+* [Mimic](#mimic)
+  * [Usage](#usage)
+  * [Endpoints](#endpoints)
+    * [`/`](#)
+    * [`/health`](#health)
+    * [`/sse`](#sse)
+    * [`/ws`](#ws)
+  * [Configuration](#configuration)
+<!-- TOC -->
+
 ## Usage
 
 ```bash
@@ -30,6 +41,45 @@ mimic
 * Connection #0 to host localhost left intact
 Mimic says hello!
 ```
+
+## Endpoints
+
+### `/`
+
+Simple endpoint that says `Mimic says hello!`
+
+### `/health`
+
+Endpoint that returns the current health of the application based on the configuration.
+
+### `/sse`
+
+A SSE (Server Sent Event) endpoint to subscribe to that returns the current date every second.
+
+```bash
+GET http://localhost:80/sse
+
+HTTP/1.1 200 OK
+Cache-Control: no-cache
+Connection: keep-alive
+Content-Type: text/event-stream
+Date: Sat, 09 Nov 2024 18:14:37 GMT
+Transfer-Encoding: chunked
+
+Response code: 200 (OK); Time: 1004ms (1 s 4 ms)
+
+data: Current time: 2024-11-09T13:14:37-05:00
+
+data: Current time: 2024-11-09T13:14:38-05:00
+
+data: Current time: 2024-11-09T13:14:39-05:00
+
+data: Current time: 2024-11-09T13:14:40-05:00
+```
+
+### `/ws`
+
+A WebSocket endpoint to subscribe to that greets you and then repeats what you send.
 
 ## Configuration
 

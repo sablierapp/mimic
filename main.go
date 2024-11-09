@@ -58,8 +58,10 @@ func run() int {
 
 func server() {
 	mux := http.NewServeMux()
-	mux.Handle("/health", withCLF(health))
-	mux.Handle("/", withCLF(hello))
+	mux.Handle("/health", HTTPLogging(health))
+	mux.Handle("/", HTTPLogging(hello))
+	mux.Handle("/sse", HTTPLogging(sseHandler))
+	mux.Handle("/ws", HTTPLogging(wsHandler))
 
 	log.Printf("Starting up on port %s (started in %.0f seconds)", *port, time.Since(startingTime).Seconds())
 
@@ -70,15 +72,6 @@ func server() {
 	}
 
 	log.Fatal(http.ListenAndServe(":"+*port, mux))
-}
-
-func withCLF(next http.HandlerFunc) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		next(w, r)
-
-		// <remote_IP_address> - [<timestamp>] "<request_method> <request_path> <request_protocol>" -
-		log.Printf("%s - - [%s] \"%s %s %s\" - -", r.RemoteAddr, time.Now().Format("02/Jan/2006:15:04:05 -0700"), r.Method, r.URL.Path, r.Proto)
-	})
 }
 
 func hello(rw http.ResponseWriter, _ *http.Request) {

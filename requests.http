@@ -1,0 +1,19 @@
+GET http://localhost:80/
+
+###
+GET http://localhost:80/health
+
+###
+WEBSOCKET ws://localhost:80/ws
+
+=== wait-for-server
+Hi Server!
+=== wait-for-server
+Are you repeating what I'm saying?
+=== wait-for-server
+Ok bye.
+
+
+###
+GET http://localhost:80/sse
+Accept: text/event-stream
