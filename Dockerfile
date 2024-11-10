@@ -7,8 +7,8 @@ WORKDIR /go/mimic
 
 # Download go modules
 COPY go.mod .
-# COPY go.sum .
-# RUN GO111MODULE=on GOPROXY=https://proxy.golang.org go mod download
+COPY go.sum .
+RUN GO111MODULE=on GOPROXY=https://proxy.golang.org go mod download
 
 COPY . .
 

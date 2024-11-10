@@ -3,6 +3,9 @@ project_name: mimic
 
 builds:
   - binary: mimic
+    env:
+      - CGO_ENABLED=0
+    mod_timestamp: "{{ .CommitTimestamp }}"
     goos:
       - windows
       - darwin
