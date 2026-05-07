@@ -23,15 +23,18 @@ var (
 	startingTime = time.Now()
 )
 
+var subcommand string
+
 func init() {
+	if len(os.Args) > 1 && os.Args[1] == "healthcheck" {
+		subcommand = os.Args[1]
+		os.Args = append(os.Args[:1], os.Args[2:]...)
+	}
 	flag.Parse()
 }
 
 func main() {
-	if len(os.Args) < 2 {
-		os.Exit(run())
-	}
-	switch os.Args[1] {
+	switch subcommand {
 	case "healthcheck":
 		os.Exit(healthcheck())
 	default:
